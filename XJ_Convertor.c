@@ -1,17 +1,36 @@
 #include<stdio.h>
 #include<string.h>
-void recuperationextension(char *x){
+//Fonction de comparaison du type aprés -i et de l'extension du fichier
+int compextettype(char *input,char *type){
 int i,j,k;
 k=0; i=0;
-while(i<strlen(x)&&x[i]!='.'){
+//Recherche du '.' dans le nom du fichier
+while(i<=strlen(input)&&input[i]!='.'){
         i=i+1;
     }
-char extension[strlen(x)-i];
-for(j=i+1;j<=strlen(x);j++){
-    extension[k]=x[j];
+
+//Si le point n'est pas trouvé on retourne 2
+    if(i>strlen(input)){
+        return 2;
+    }
+//sinon on crée un tableau extension contenant l'extension du fichier
+    else{
+char extension[strlen(input)-i];
+//Initialisation du tableau extension
+for(j=i+1;j<=strlen(input);j++){
+    extension[k]=input[j];
     k=k+1;
 }
-printf("l'extension est %s",extension);
+//On compare ensuite l'extension et le type fourni en argument
+if(strcmp(extension,type)==0){
+//On retourne 1 si le type fourni en argument correspond à l'extension du fichier
+    return 1;
+}
+else{
+//On retourne 0 si le type fourni en argument ne correspond pas à l'extension du fichier
+    return 0;
+}
+}
 }
 int main(int argc,char *argv[]){
     if(argc==10){
@@ -26,5 +45,5 @@ int main(int argc,char *argv[]){
 
 }
     }
-    recuperationextension(argv[7]);
+    printf("%d",recuperationextension(argv[7],argv[2]));
 }
