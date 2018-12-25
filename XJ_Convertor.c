@@ -4,7 +4,7 @@
 char*extensionfic(char*nomficin){
     int i,j;
     i=0;
-while(i<=strlen(nomficin)&&nomficin[i]!='.'){
+while ( i <= strlen ( nomficin ) && nomficin [ i ] ! = '.' ) {
         i=i+1;
     }
 if(i>strlen(nomficin)){
