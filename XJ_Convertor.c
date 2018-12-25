@@ -2,22 +2,40 @@
 #include<string.h>
 char*extensionfic(char*nomficin){
     int i,j,k;
-    k=0;
+    k=0;i=0;
 while(i<=strlen(nomficin)&&nomficin[i]!='.'){
         i=i+1;
     }
-     if(i>strlen(nomficin)){
+if(i>strlen(nomficin)){
         printf("Le fichier n'a pas d'extension");
     }
-     else{
+else{
+char tab[100];
 char *extension=NULL;
 for(j=i+1;j<=strlen(nomficin);j++){
-    extension[k]=nomficin[j];
+    tab[k]=nomficin[j];
     k=k+1;
 }
+extension=tab;
 return extension;
 }
 }
+
+void traitementtypeetextension(char*extension,char*type){
+if(strcmp(type,"xml")!=0 &&strcmp(type,"json")!=0){
+    printf("Le type du fichier doit etre soit xml soit json");
+}
+else if(strcmp(extension,"xml")!=0 &&strcmp(extension,"json")!=0){
+    printf("L'extension du fichier doit etre soit xml soit json");
+}
+else{
+    if(strcmp(extension,type)!=0){
+    printf("Vous avez indiqué %s donc l'extension du fichier doit etre .%s",type,type);
+}
+}
+}
+
+
 
 int main(int argc,char *argv[]){
     int i;
@@ -70,6 +88,7 @@ int main(int argc,char *argv[]){
     printf("Vous devez impérativement donner le nom de votre fichier d'entrée");
   }
   printf("%s\n",type);printf("%d\n",trace);printf("%s\n",urlhttp);printf("%s\n",nomficin);printf("%s\n",nomficout);
-    //printf("%s",extensionfic(nomficin));
+    printf("%s",extensionfic(nomficin));
+    traitementtypeetextension(extensionfic(nomficin),type);
 
     }
