@@ -2,8 +2,8 @@
 #include<stdlib.h>
 #include<string.h>
 char*extensionfic(char*nomficin){
-    int i,j,k;
-    k=0;i=0;
+    int i,j;
+    i=0;
 while(i<=strlen(nomficin)&&nomficin[i]!='.'){
         i=i+1;
     }
@@ -11,31 +11,44 @@ if(i>strlen(nomficin)){
         printf("Le fichier n'a pas d'extension");
     }
 else{
-char tab[100];
 char *extension=NULL;
-for(j=i+1;j<=strlen(nomficin);j++){
-    tab[k]=nomficin[j];
-    k=k+1;
+extension=(char *)malloc(strlen(nomficin));
+for(j=i+1;j<strlen(nomficin);j++){
+    strncat(extension,&nomficin[j],1);
 }
-extension=tab;
 return extension;
 }
 }
 
-void traitementtypeetextension(char*extension,char*type){
-if(strcmp(type,"xml")!=0 &&strcmp(type,"json")!=0){
-    printf("Le type du fichier doit etre soit xml soit json");
-}
-else if(strcmp(extension,"xml")!=0 &&strcmp(extension,"json")!=0){
-    printf("L'extension du fichier doit etre soit xml soit json");
-}
-else{
-    if(strcmp(extension,type)!=0){
-    printf("Vous avez indique %s donc l'extension du fichier doit etre .%s",type,type);
-}
-}
+void validitedunfichierxml(char*nomficin){
+  //Création d'une variable contenant la commande de vérification de la validité du fichier xml
+    char*test=NULL;
+   //Initialisation de cette variable
+    test=(char *)malloc((strlen("xml val --well-formed -e")+strlen(nomficin))+1);
+    strcpy(test,"xml val --well-formed -e ");
+    strcat(test,nomficin);
+//Vérification syntaxique du document
+system(test); printf("syntaxiquement\n");
+//Test par rapport à une DTD interne
+system(test);printf("valide par rapport a son DTD");
+//Par rapport à une DTD externe
+//system("xml val --dtd document.dtd -e document.xml");
 }
 
+void traitementtypeetextension(char*extension,char*type,char*nomficin){
+if(strcmp(type,"xml")!=0 &&strcmp(type,"json")!=0){
+    printf("Le type du fichier doit etre soit xml soit json\n");
+}
+else if(strcmp(extension,"xml")!=0 &&strcmp(extension,"json")!=0){
+    printf("L'extension du fichier doit etre soit xml soit json\n");
+}
+else if(strcmp(extension,type)!=0){
+    printf("Vous avez indique %s donc l'extension du fichier doit etre .%s\n",type,type);
+}
+else{
+    validitedunfichierxml(nomficin);
+}
+}
 
 
 int main(int argc,char *argv[]){
@@ -93,17 +106,8 @@ int main(int argc,char *argv[]){
    //Extension du fichier d'entrée
     printf("%s\n",extensionfic(nomficin));
     //Verification et traitement de l'extension
-    traitementtypeetextension(extensionfic(nomficin),type);
-    //Création d'une variable contenant la commande de vérification de la validité du fichier xml
-    char*test=NULL;
-   //Initialisation de cette variable
-    test=(char *)malloc((strlen("xml val --well-formed -e")+strlen(nomficin))+1);
-    strcpy(test,"xml val --well-formed -e ");
-    strcat(test,nomficin);
-//Vérification syntaxique du document
-system(test); printf("syntaxiquement");
-//Test par rapport à une DTD interne
-system(test);printf("valide par rapport à son DTD");
-//Par rapport à une DTD externe
-//system("xml val --dtd document.dtd -e document.xml")
+    traitementtypeetextension(extensionfic(nomficin),type,nomficin);
+
+
+
     }
