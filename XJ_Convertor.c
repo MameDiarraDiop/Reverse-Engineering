@@ -24,7 +24,7 @@ int main(int argc,char *argv[]){
     char*type=NULL;int trace;char*urlhttp=NULL;char*nomficin=NULL;char*nomficout=NULL;
     //Recupération du type
     i=1;
-    while(i<argc&&strcmp(argv[i],"-i")!=0){
+    while(i<argc && strcmp(argv[i],"-i")!=0){
        i=i+1;
         }
     if(strcmp(argv[i],"-i")==0){type=argv[i+1];}
@@ -73,7 +73,3 @@ int main(int argc,char *argv[]){
     //printf("%s",extensionfic(nomficin));
 
     }
-
-
-
-
