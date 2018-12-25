@@ -31,7 +31,7 @@ else if(strcmp(extension,"xml")!=0 &&strcmp(extension,"json")!=0){
 }
 else{
     if(strcmp(extension,type)!=0){
-    printf("Vous avez indiqué %s donc l'extension du fichier doit etre .%s",type,type);
+    printf("Vous avez indique %s donc l'extension du fichier doit etre .%s",type,type);
 }
 }
 }
@@ -48,7 +48,7 @@ int main(int argc,char *argv[]){
         }
     if(strcmp(argv[i],"-i")==0){type=argv[i+1];}
         else{
-            printf("Vous devez impérativement indiquer le type de votre document");
+            printf("Vous devez imperativement indiquer le type de votre document");
         }
     //Vérification du paramétre -t
     i=1;
@@ -67,7 +67,7 @@ int main(int argc,char *argv[]){
         }
     if(strcmp(argv[i],"-h")==0){urlhttp=argv[i+1];}
     else{
-    printf("Vous devez impérativement donner le nom de votre fichier d'entrée");
+    printf("Vous devez imperativement donner le nom de votre fichier d'entree");
   }
 
     //Récupération du nom du fichier d'entrée
@@ -77,7 +77,7 @@ int main(int argc,char *argv[]){
         }
     if(strcmp(argv[i],"-f")==0){nomficin=argv[i+1];}
     else{
-    printf("Vous devez impérativement donner le nom de votre fichier d'entrée");
+    printf("Vous devez imperativement donner le nom de votre fichier d'entree");
   }
     //Récupération du nom du fichier de sortie
     i=1;
@@ -86,18 +86,24 @@ int main(int argc,char *argv[]){
         }
    if(strcmp(argv[i],"-o")==0){nomficout=argv[i+1];}
    else{
-    printf("Vous devez impérativement donner le nom de votre fichier d'entrée");
+    printf("Vous devez imperativement donner le nom de votre fichier d'entree");
   }
+  //Vérification et récupération des valeurs pris en entrée
   printf("%s\n",type);printf("%d\n",trace);printf("%s\n",urlhttp);printf("%s\n",nomficin);printf("%s\n",nomficout);
-    printf("%s",extensionfic(nomficin));
+   //Extension du fichier d'entrée
+    printf("%s\n",extensionfic(nomficin));
+    //Verification et traitement de l'extension
     traitementtypeetextension(extensionfic(nomficin),type);
-    char*test=nomficin
-//Syntaxe document
-system("xml val --well-formed -e %s",&nomficin);
-printf("%s est valide syntaxiquement",nomficin);
+    //Création d'une variable contenant la commande de vérification de la validité du fichier xml
+    char*test=NULL;
+   //Initialisation de cette variable
+    test=(char *)malloc((strlen("xml val --well-formed -e")+strlen(nomficin))+1);
+    strcpy(test,"xml val --well-formed -e ");
+    strcat(test,nomficin);
+//Vérification syntaxique du document
+system(test); printf("syntaxiquement");
 //Test par rapport à une DTD interne
-system("xml  val --embed -e %s",&nomficin);
-printf("%s est valide par rapport à son DTD",nomficin);
+system(test);printf("valide par rapport à son DTD");
 //Par rapport à une DTD externe
 //system("xml val --dtd document.dtd -e document.xml")
     }
