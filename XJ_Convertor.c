@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
 char*extensionfic(char*nomficin){
     int i,j,k;
@@ -90,5 +91,13 @@ int main(int argc,char *argv[]){
   printf("%s\n",type);printf("%d\n",trace);printf("%s\n",urlhttp);printf("%s\n",nomficin);printf("%s\n",nomficout);
     printf("%s",extensionfic(nomficin));
     traitementtypeetextension(extensionfic(nomficin),type);
-
+    char*test=nomficin
+//Syntaxe document
+system("xml val --well-formed -e %s",&nomficin);
+printf("%s est valide syntaxiquement",nomficin);
+//Test par rapport à une DTD interne
+system("xml  val --embed -e %s",&nomficin);
+printf("%s est valide par rapport à son DTD",nomficin);
+//Par rapport à une DTD externe
+//system("xml val --dtd document.dtd -e document.xml")
     }
