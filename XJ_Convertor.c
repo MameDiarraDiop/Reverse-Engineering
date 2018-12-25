@@ -1,49 +1,79 @@
 #include<stdio.h>
 #include<string.h>
-//Fonction de comparaison du type aprés -i et de l'extension du fichier
-int compextettype(char *input,char *type){
-int i,j,k;
-k=0; i=0;
-//Recherche du '.' dans le nom du fichier
-while(i<=strlen(input)&&input[i]!='.'){
+char*extensionfic(char*nomficin){
+    int i,j,k;
+    k=0;
+while(i<=strlen(nomficin)&&nomficin[i]!='.'){
         i=i+1;
     }
-
-//Si le point n'est pas trouvé on retourne 2
-    if(i>strlen(input)){
-        return 2;
+     if(i>strlen(nomficin)){
+        printf("Le fichier n'a pas d'extension");
     }
-//sinon on crée un tableau extension contenant l'extension du fichier
-    else{
-char extension[strlen(input)-i];
-//Initialisation du tableau extension
-for(j=i+1;j<=strlen(input);j++){
-    extension[k]=input[j];
+     else{
+char *extension=NULL;
+for(j=i+1;j<=strlen(nomficin);j++){
+    extension[k]=nomficin[j];
     k=k+1;
 }
-//On compare ensuite l'extension et le type fourni en argument
-if(strcmp(extension,type)==0){
-//On retourne 1 si le type fourni en argument correspond à l'extension du fichier
-    return 1;
-}
-else{
-//On retourne 0 si le type fourni en argument ne correspond pas à l'extension du fichier
-    return 0;
+return extension;
 }
 }
-}
+
 int main(int argc,char *argv[]){
-    if(argc==10){
- if(strcmp(argv[1],"-i")==0&&strcmp(argv[3],"-t")==0&&strcmp(argv[4],"-h")==0&&strcmp(argv[6],"-f")==0&&strcmp(argv[8],"-o")==0){
-  if(strcmp(argv[2],"xml")==0||strcmp(argv[2],"json")==0){
-    printf("le type est ok et est %s\n",argv[2]);
- }
- else{
-    printf("le type n'est pas connu\n");
- }
+    int i;
+    char*type=NULL;int trace;char*urlhttp=NULL;char*nomficin=NULL;char*nomficout=NULL;
+    //Recupération du type
+    i=1;
+    while(i<argc&&strcmp(argv[i],"-i")!=0){
+       i=i+1;
+        }
+    if(strcmp(argv[i],"-i")==0){type=argv[i+1];}
+        else{
+            printf("Vous devez impérativement indiquer le type de votre document");
+        }
+    //Vérification du paramétre -t
+    i=1;
+    while(i<argc&&strcmp(argv[i],"-t")!=0){
+         i=i+1;
+        }
+      if(strcmp(argv[i],"-t")==0){trace=1;}
+        else{
+            trace=0;
+        }
 
+    //Récupération de l'url
+    i=1;
+    while(i<argc&&strcmp(argv[i],"-h")!=0){
+            i=i+1;
+        }
+    if(strcmp(argv[i],"-h")==0){urlhttp=argv[i+1];}
+    else{
+    printf("Vous devez impérativement donner le nom de votre fichier d'entrée");
+  }
 
-}
+    //Récupération du nom du fichier d'entrée
+    i=1;
+    while(i<argc&&strcmp(argv[i],"-f")!=0){
+            i=i+1;
+        }
+    if(strcmp(argv[i],"-f")==0){nomficin=argv[i+1];}
+    else{
+    printf("Vous devez impérativement donner le nom de votre fichier d'entrée");
+  }
+    //Récupération du nom du fichier de sortie
+    i=1;
+   while(i<argc&&strcmp(argv[i],"-o")!=0){
+            i=i+1;
+        }
+   if(strcmp(argv[i],"-o")==0){nomficout=argv[i+1];}
+   else{
+    printf("Vous devez impérativement donner le nom de votre fichier d'entrée");
+  }
+  printf("%s\n",type);printf("%d\n",trace);printf("%s\n",urlhttp);printf("%s\n",nomficin);printf("%s\n",nomficout);
+    //printf("%s",extensionfic(nomficin));
+
     }
-    printf("%d",recuperationextension(argv[7],argv[2]));
-}
+
+
+
+
