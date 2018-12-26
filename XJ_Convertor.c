@@ -133,7 +133,7 @@ int main(int argc,char *argv[]){
     nomficin=recuperationficin(argv,argc);
 
     nomficout=recuperationficout(argv,argc);
-    //Vérification et récupération des valeurs pris en entrée
+    //Vérification et récupération des valeurs prises en entrée
     printf("%s\n",type);printf("%d\n",trace);printf("%s\n",urlhttp);printf("%s\n",nomficin);printf("%s\n",nomficout);
     //Extension du fichier d'entrée
     printf("%s\n",extensionfic(nomficin));
