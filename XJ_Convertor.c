@@ -2,22 +2,30 @@
 #include<stdlib.h>
 #include<string.h>
 char*extensionfic(char*nomficin){
-    int i,j;
+   char *extension=NULL; int i,j;
+
     i=0;
-while(i<=strlen(nomficin)&&nomficin[i]!='.'){
+while(i<strlen(nomficin)&&nomficin[i]!='.'){
         i=i+1;
     }
+   // printf("%d",i);
 if(i>strlen(nomficin)){
         printf("Le fichier n'a pas d'extension");
     }
 else{
-char *extension=NULL;
-extension=(char *)malloc(strlen(nomficin));
+   char c ;    size_t len = strlen(nomficin)-i; int k=0; extension = malloc(len + 1 );
 for(j=i+1;j<strlen(nomficin);j++){
-    strncat(extension,&nomficin[j],1);
+
+c=nomficin[j];
+//printf("%c\n",c);
+
+extension[k]=c;
+k=k+1;
+}
+extension[len + 1] = '\0';
+ printf( "%s\n", extension ); /* prints "blablablaH" */
 }
 return extension;
-}
 }
 
 void validitedunfichierxml(char*nomficin){
@@ -50,7 +58,7 @@ else{
 }
 }
 
- //Fonction de recupération du typ
+ //Fonction de recupération du type
 char* recuperationtype(char*argv[],int argc){
   int i;
   char*type=NULL;
@@ -68,14 +76,12 @@ char* recuperationtype(char*argv[],int argc){
 //Fonction de vérification du paramétre -t
 int verificationdet(char*argv[],int argc){
 int i;int trace;
- i=1;
+ i=0;
     while(i<argc&&strcmp(argv[i],"-t")!=0){
          i=i+1;
         }
-      if(strcmp(argv[i],"-t")==0){trace=1;}
-        else{
-            trace=0;
-        }
+      if(strcmp(argv[i],"-t")!=0){trace=0;}
+      else{trace=1;}
         return trace;
 }
 
@@ -122,21 +128,21 @@ int i;int trace;
   }
 
 int main(int argc,char *argv[]){
-    int i;char*type;int trace;char*urlhttp=NULL;char*nomficin=NULL;char*nomficout=NULL;
+    int i;char*type=NULL;int trace;char*urlhttp=NULL;char*nomficin=NULL;char*nomficout=NULL;
 
     type=recuperationtype(argv,argc);
 
-    trace=verificationdet(argv,argc);
+   trace=verificationdet(argv,argc);
 
     urlhttp=recuperationurl(argv,argc);
 
     nomficin=recuperationficin(argv,argc);
 
     nomficout=recuperationficout(argv,argc);
-    //Vérification et récupération des valeurs prises en entrée
-    printf("%s\n",type);printf("%d\n",trace);printf("%s\n",urlhttp);printf("%s\n",nomficin);printf("%s\n",nomficout);
+    //Vérification et récupération des valeurs pris en entrée
+  printf("%d\n",trace);  printf("%s\n",type);printf("%s\n",urlhttp);printf("%s\n",nomficin);printf("%s\n",nomficout);
     //Extension du fichier d'entrée
-    printf("%s\n",extensionfic(nomficin));
+    //printf("%s\n",extensionfic(nomficin));
     //Verification et traitement de l'extension
     traitementtypeetextension(extensionfic(nomficin),type,nomficin);
 
