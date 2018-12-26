@@ -75,7 +75,8 @@ int i;int trace;
     while(i<argc&&strcmp(argv[i],"-t")!=0){
          i=i+1;
         }
-      if(strcmp(argv[i],"-t")!=0){trace=0;}
+
+      if(strcmp(argv[i-1],"-t")!=0){trace=0;}
       else{trace=1;}
         return trace;
 }
