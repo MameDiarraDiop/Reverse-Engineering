@@ -53,7 +53,7 @@ else{
 }
 }
 
- //Fonction de recupération du type
+ //Fonction de récupération du type
 char* recuperationtype(char*argv[],int argc){
   int i;
   char*type=NULL;
