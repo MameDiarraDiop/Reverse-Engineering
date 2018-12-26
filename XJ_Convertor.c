@@ -2,27 +2,22 @@
 #include<stdlib.h>
 #include<string.h>
 char*extensionfic(char*nomficin){
-   char *extension=NULL; int i,j;
-
-    i=0;
+char *extension=NULL; int i,j;
+i=0;
 while(i<strlen(nomficin)&&nomficin[i]!='.'){
         i=i+1;
     }
-   // printf("%d",i);
 if(i>strlen(nomficin)){
         printf("Le fichier n'a pas d'extension");
     }
 else{
    char c ;    size_t len = strlen(nomficin)-i; int k=0; extension = malloc(len + 1 );
 for(j=i+1;j<strlen(nomficin);j++){
-
 c=nomficin[j];
-//printf("%c\n",c);
-
 extension[k]=c;
 k=k+1;
 }
-extension[len + 1] = '\0';
+extension[len-1 ] = '\0';
  printf( "%s\n", extension ); /* prints "blablablaH" */
 }
 return extension;
