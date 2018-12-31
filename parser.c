@@ -3,19 +3,39 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xpathInternals.h>
+void
+ show (xmlNodePtr node)
+  {
+   if (node->type == XML_ELEMENT_NODE)
+     {
+       xmlNodePtr n;
+       for (n = node; n; n = n->next)
+ 	{
+ 	  if (n->children)
+ 	    {
+ 	      show (n->children);
+ 	    }
+ 	}
+     }
+   else if ((node->type == XML_CDATA_SECTION_NODE)|| (node->type == XML_TEXT_NODE))
+     {
+       xmlChar *path = xmlGetNodePath (node);
+       printf ("%s -> '%s'\n", path,
+ 	      node->content ? (char *) node->content : "(null)");
+       xmlFree (path);
+     }
+ }
+ 
+
 // cette fonction (récursive) affiche le nom de tous les éléments du document XML
 static void print_element_names(xmlNode *a_node)
 {
     xmlNode *cur_node = NULL;
-    xmlNode *cur_nodep = NULL;
     for(cur_node = a_node; cur_node; cur_node = cur_node->next) 
     {
         if (cur_node->type == XML_ELEMENT_NODE) 
        {
-           
-            if(cur_nodep->name!=cur_node->name)
             printf("node type: Element, name: %s\n", cur_node->name);
- cur_nodep=cur_node->next;
         }        
 print_element_names(cur_node->children);
     }
