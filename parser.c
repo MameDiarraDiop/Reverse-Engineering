@@ -58,5 +58,5 @@ print_element_names(root_element);
 
     xmlFreeDoc(doc);
     xmlCleanupParser();
-    return 0
+    return 0;
 }
