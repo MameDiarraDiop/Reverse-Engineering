@@ -14,26 +14,17 @@ enum {
 
 
 
-
+/*Cette fonction permet de faire la génération du fichier svg*/
 void generation(char nomficout[]){
    cairo_t *cr;
-    cairo_t *cr1;
     cairo_surface_t *surface;
-    cairo_surface_t *surface1;
 
     cairo_pattern_t *pattern;
-    cairo_pattern_t *pattern1;
 
    int x,y;
-
-
     surface =(cairo_surface_t *)cairo_svg_surface_create(nomficout, 1000.0, 1000.0);
 
     cr = cairo_create(surface);
-
-surface1 =(cairo_surface_t *)cairo_svg_surface_create("nomficout", 1000.0, 1000.0);
-
-    cr1 = cairo_create(surface1);
 
     /* Draw the squares in the background */
 
@@ -43,51 +34,26 @@ surface1 =(cairo_surface_t *)cairo_svg_surface_create("nomficout", 1000.0, 1000.
 
            cairo_rectangle(cr, x*100.0, y*100.0, 50, 50);
 
-for (x=0; x<10; x++)
-
-       for (y=0; y<10; y++)
-
-           cairo_rectangle(cr1, x*100.0, y*100.0, 50, 50);
-
     pattern = cairo_pattern_create_radial(50, 50, 5, 50, 50, 50);//*
-    pattern1 = cairo_pattern_create_radial(50, 50, 5, 50, 50, 50);
     cairo_pattern_add_color_stop_rgb(pattern, 0, 0.75, 0.15, 0.99);
-
     cairo_pattern_add_color_stop_rgb(pattern, 0.9, 1, 1, 1);
-
-
     cairo_set_source(cr, pattern);//*
-    cairo_set_source(cr, pattern1);
     cairo_fill(cr);
-    cairo_fill(cr1);
 
     /* Writing in the foreground */
 
     cairo_set_font_size (cr, 15);
-    cairo_set_font_size (cr1, 15);
     cairo_select_font_face (cr, "Georgia",CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-    cairo_select_font_face (cr1, "Georgia",CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
     cairo_set_source_rgb (cr, 0, 0, 0);
-    cairo_set_source_rgb (cr1, 0, 0, 0);
 
 
     cairo_move_to(cr, 10, 25);
-    cairo_move_to(cr1, 10, 25);
     cairo_show_text(cr, "Halo!");
-    cairo_show_text(cr1, "Halo!");
 
     cairo_move_to(cr, 10, 75);
-    cairo_move_to(cr1, 10, 75);
     cairo_show_text(cr, "Desole on a pas pu terminer!");
-    cairo_show_text(cr1, "Desole on a pas pu terminer!");
-
     cairo_destroy (cr);
-    cairo_destroy (cr1);
     cairo_surface_destroy (surface);
-    cairo_surface_destroy (surface1);
-
-    
-
 }
 
 
@@ -582,8 +548,9 @@ case 1  : {
            xmlNode* root=NULL;
            root=xmlDocGetRootElement(doc);
            /*Test de validation*/
-           validation_dtd(doc,dtd,affic_erreurs);
+           int i=validation_dtd(doc,dtd,affic_erreurs);
            //printf("%d",i);
+           if(i==1){
            xmlNode* t[100];
            /*Test de get_nodes*/
            get_nodes(root,t);
@@ -591,7 +558,10 @@ case 1  : {
            xmlNode* enfants[100][100];
            Extraction(t,enfants,trace);
            generation(nomficout);
-           printf("Extraction et génération effectuée\n");
+           printf("Extraction et génération effectuée\n");}
+           else{
+            printf("Le document que vous avez fourni n'est pas exploitable\n");
+              }
            break;
            
           }
@@ -612,7 +582,8 @@ case 2: {
            xmlNode* root=NULL;
            root=xmlDocGetRootElement(doc);
            /*Test de validation*/
-           validation_dtd(doc,dtd,affic_erreurs);
+           int i=validation_dtd(doc,dtd,affic_erreurs);
+           if(i==1){
            //printf("%d",i);
            xmlNode* t[100];
            /*Test de get_nodes*/
@@ -622,6 +593,10 @@ case 2: {
            Extraction(t,enfants,trace);
            generation(nomficout);
            printf("Extraction et génération effectuée\n");
+           }
+           else{
+               printf("Le document que vous avez fourni n'est pas exploitable\n");
+               }
            break;
 }
 }}
