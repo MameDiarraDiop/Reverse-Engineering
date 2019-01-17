@@ -15,7 +15,7 @@ enum {
 
 
 
-void generation(char *nomficout){
+void generation(char nomficout[]){
    cairo_t *cr;
     cairo_t *cr1;
     cairo_surface_t *surface;
@@ -107,7 +107,7 @@ int get_nodes(xmlNode *a_node,xmlNode*t[]) {
 }
 
 /*Cette fonction permet d'avoir l'ensembles  des éléments et leurs fils s'ils en ont du fichier xml*/
-void xml_Get_Node_Children(xmlNodePtr Node,xmlNode* noeud_enfants[][100],int j)
+void xml_Get_Node_Children(xmlNodePtr Node,xmlNode* noeud_enfants[][100],int j,int trace)
  {   int k=0;
       if(Node->type==XML_ELEMENT_NODE){ 
       int i=1;
@@ -129,21 +129,23 @@ void xml_Get_Node_Children(xmlNodePtr Node,xmlNode* noeud_enfants[][100],int j)
      else{
       noeud_enfants[j][0]=NULL;
 }     
+       if(trace==1){
       while(noeud_enfants[j][k]!=NULL){
          if(k==0)
          printf("%s\n",noeud_enfants[j][k]->name);
          else
          printf("\t%s\n",noeud_enfants[j][k]->name);
          k++;
-                          }              
+                          }  
+}            
 }
 
 /*Cette fonction permet de faire l'extraction des entités et relations du fichier*/
-void Extraction(xmlNode* t[],xmlNode*noeud_enfants[][100]){
+void Extraction(xmlNode* t[],xmlNode*noeud_enfants[][100],int trace){
  int i;
  for(i=0;t[i]!=NULL;i++){
  if(t[i]->type==XML_ELEMENT_NODE){
- xml_Get_Node_Children(t[i],noeud_enfants,i);
+ xml_Get_Node_Children(t[i],noeud_enfants,i,trace);
                                  }
                         }
 }
@@ -296,7 +298,7 @@ else if(nbre_f==1){
       nomficin[j]=nom[j];
                               }
     nomficin[j]='\0'; 
-    printf("%s",nomficin); 
+    //printf("%s",nomficin); 
     res= 1;    }
     else{
 //     printf("Donner le nom du fichier\n");
@@ -533,6 +535,7 @@ char nomficout[50];
 char extension_ficin[50];
 char extension_ficout[50];
 char urlhttp[50];
+int trace=verification_trace(argv,argc);
 int recup_local,recup_flux,recup_sortie,recup_type,recup_t,recup_extension_in,recup_extension_out,test_ext_ficin,test_ext_ficout,test_type;
 int args;
 if(argc<=10){
@@ -579,19 +582,48 @@ case 1  : {
            xmlNode* root=NULL;
            root=xmlDocGetRootElement(doc);
            /*Test de validation*/
-           int i=validation_dtd(doc,dtd,affic_erreurs);
-           printf("%d",i);
+           validation_dtd(doc,dtd,affic_erreurs);
+           //printf("%d",i);
            xmlNode* t[100];
            /*Test de get_nodes*/
            get_nodes(root,t);
            /*Test de Extraction*/
            xmlNode* enfants[100][100];
-           Extraction(t,enfants);
+           Extraction(t,enfants,trace);
            generation(nomficout);
+           printf("Extraction et génération effectuée\n");
            break;
            
           }
-case 2: printf("Informations récupérées sans demande de trace\n");break;
+case 2: {
+           printf("Informations récupérées sans demande de trace\n");
+           int affic_erreurs=0;
+           /*Parsing DTD*/
+           xmlDtd* dtd=NULL;
+           dtd=xmlParseDTD(NULL,(const xmlChar*)"doc1.dtd");
+           /*Parsing Doc*/
+           xmlDoc* doc=NULL;
+           doc = xmlReadFile(nomficin, NULL, 0);
+           if (doc == NULL){
+            printf("Parse erreur ! ");
+            return 1;
+                            }
+           /*Avoir l'élément racine*/
+           xmlNode* root=NULL;
+           root=xmlDocGetRootElement(doc);
+           /*Test de validation*/
+           validation_dtd(doc,dtd,affic_erreurs);
+           //printf("%d",i);
+           xmlNode* t[100];
+           /*Test de get_nodes*/
+           get_nodes(root,t);
+           /*Test de Extraction*/
+           xmlNode* enfants[100][100];
+           Extraction(t,enfants,trace);
+           generation(nomficout);
+           printf("Extraction et génération effectuée\n");
+           break;
+}
 }}
 else {
  printf("Vous avez donné des informations inutiles\n");
