@@ -4,11 +4,92 @@
 #include <libxml/parser.h>
 #include <libxml/valid.h> 
 #include <libxml/tree.h> 
+#include <cairo-svg.h>
+
 enum {
  ERROR_OCCURED = -1, // Une erreur est survenue pendant la validation
  NOT_VALID = 0,      // Le document n'est pas valide
  VALID = 1           // Le document est valide
 };
+
+
+
+
+void generation(char *nomficout){
+   cairo_t *cr;
+    cairo_t *cr1;
+    cairo_surface_t *surface;
+    cairo_surface_t *surface1;
+
+    cairo_pattern_t *pattern;
+    cairo_pattern_t *pattern1;
+
+   int x,y;
+
+
+    surface =(cairo_surface_t *)cairo_svg_surface_create(nomficout, 1000.0, 1000.0);
+
+    cr = cairo_create(surface);
+
+surface1 =(cairo_surface_t *)cairo_svg_surface_create("nomficout", 1000.0, 1000.0);
+
+    cr1 = cairo_create(surface1);
+
+    /* Draw the squares in the background */
+
+    for (x=0; x<10; x++)
+
+       for (y=0; y<10; y++)
+
+           cairo_rectangle(cr, x*100.0, y*100.0, 50, 50);
+
+for (x=0; x<10; x++)
+
+       for (y=0; y<10; y++)
+
+           cairo_rectangle(cr1, x*100.0, y*100.0, 50, 50);
+
+    pattern = cairo_pattern_create_radial(50, 50, 5, 50, 50, 50);//*
+    pattern1 = cairo_pattern_create_radial(50, 50, 5, 50, 50, 50);
+    cairo_pattern_add_color_stop_rgb(pattern, 0, 0.75, 0.15, 0.99);
+
+    cairo_pattern_add_color_stop_rgb(pattern, 0.9, 1, 1, 1);
+
+
+    cairo_set_source(cr, pattern);//*
+    cairo_set_source(cr, pattern1);
+    cairo_fill(cr);
+    cairo_fill(cr1);
+
+    /* Writing in the foreground */
+
+    cairo_set_font_size (cr, 15);
+    cairo_set_font_size (cr1, 15);
+    cairo_select_font_face (cr, "Georgia",CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+    cairo_select_font_face (cr1, "Georgia",CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+    cairo_set_source_rgb (cr, 0, 0, 0);
+    cairo_set_source_rgb (cr1, 0, 0, 0);
+
+
+    cairo_move_to(cr, 10, 25);
+    cairo_move_to(cr1, 10, 25);
+    cairo_show_text(cr, "Halo!");
+    cairo_show_text(cr1, "Halo!");
+
+    cairo_move_to(cr, 10, 75);
+    cairo_move_to(cr1, 10, 75);
+    cairo_show_text(cr, "Desole on a pas pu terminer!");
+    cairo_show_text(cr1, "Desole on a pas pu terminer!");
+
+    cairo_destroy (cr);
+    cairo_destroy (cr1);
+    cairo_surface_destroy (surface);
+    cairo_surface_destroy (surface1);
+
+    
+
+}
+
 
 /*Cette fonction permet d'avoir tous les noeuds du fichier dans un tableau*/
 int get_nodes(xmlNode *a_node,xmlNode*t[]) {
@@ -506,6 +587,7 @@ case 1  : {
            /*Test de Extraction*/
            xmlNode* enfants[100][100];
            Extraction(t,enfants);
+           generation(nomficout);
            break;
            
           }
