@@ -4,8 +4,8 @@
 #include <libxml/parser.h>
 #include <libxml/valid.h> 
 #include <libxml/tree.h> 
-#include <cairo-svg.h>
-
+#include<time.h>
+#include"svg.h"
 enum {
  ERROR_OCCURED = -1, // Une erreur est survenue pendant la validation
  NOT_VALID = 0,      // Le document n'est pas valide
@@ -15,47 +15,93 @@ enum {
 
 
 /*Cette fonction permet de faire la génération du fichier svg*/
-void generation(char nomficout[]){
-   cairo_t *cr;
-    cairo_surface_t *surface;
+// --------------------------------------------------------
+// FUNCTION drawrectangles
+// --------------------------------------------------------
+void drawrectangles(char *nomficout,char *nomentite1,char *relation,char*nomentite2,xmlChar* nomattr[])
+{
+    svg* psvg;
+    psvg = svg_create(1000, 1000);
 
-    cairo_pattern_t *pattern;
+    if(psvg == NULL)
+    {
+        puts("psvg is NULL");
+    }
+    else
+    {
+         //rectangle telephone
+        svg_rectangle(psvg, 200, 250, 50, 224, "white", "#000000", 2, 8, 8);
+        //rectangle client
+        svg_rectangle(psvg, 200, 250, 600, 224, "white", "#000000", 2, 8, 8);
+        //ellipse relation
+        svg_ellipse(psvg, 400, 320, 150, 50, "white", "#800000", 4);
+        svg_line(psvg, "#000000", 6, 70, 300, 800, 300);
+        //attr modele
+        svg_text(psvg, 60, 350, "sans-serif", 20, "#000000", "#000000", (char*)nomattr[1]);
+        //attr marque
+        svg_text(psvg, 60, 400, "sans-serif", 20, "#000000", "#000000",(char*)nomattr[0]);
+        //entite relation
+        svg_text(psvg, 600, 290, "sans-serif", 20, "#000000", "#000000", relation);
+        //entite  client
+        svg_text(psvg, 330, 290, "sans-serif", 20, "#000000", "#000000", nomentite2);
+        //attr id
+        svg_text(psvg, 330, 330, "sans-serif", 20, "#000000", "#000000",(char*)nomattr[5]);
+        //attr namerelation
+        svg_text(psvg, 330, 360, "sans-serif", 20, "#000000", "#000000", (char*)nomattr[6]);
+        //entite telephone
+        svg_text(psvg, 60, 290, "sans-serif", 20, "#000000", "#000000", nomentite1);
+        //attr nom
+        svg_text(psvg, 600, 350, "sans-serif", 20, "#000000", "#000000",(char*)nomattr[2]);
+        //attr prenom
+        svg_text(psvg, 600, 400, "sans-serif", 20, "#000000", "#000000", (char*)nomattr[3]);
+        //attr numero
+        svg_text(psvg, 600, 450, "sans-serif", 20, "#000000", "#000000", (char*)nomattr[4]);
+        //svg_line(psvg, "#000000", 6, 70, 300, 1000, 300);
+        
 
-   int x,y;
-    surface =(cairo_surface_t *)cairo_svg_surface_create(nomficout, 1000.0, 1000.0);
+        svg_finalize(psvg);
+        svg_save(psvg, nomficout);
+        svg_free(psvg);
+    }
+} 
+/*Generation*/
+                     
 
-    cr = cairo_create(surface);
-
-    /* Draw the squares in the background */
-
-    for (x=0; x<10; x++)
-
-       for (y=0; y<10; y++)
-
-           cairo_rectangle(cr, x*100.0, y*100.0, 50, 50);
-
-    pattern = cairo_pattern_create_radial(50, 50, 5, 50, 50, 50);//*
-    cairo_pattern_add_color_stop_rgb(pattern, 0, 0.75, 0.15, 0.99);
-    cairo_pattern_add_color_stop_rgb(pattern, 0.9, 1, 1, 1);
-    cairo_set_source(cr, pattern);//*
-    cairo_fill(cr);
-
-    /* Writing in the foreground */
-
-    cairo_set_font_size (cr, 15);
-    cairo_select_font_face (cr, "Georgia",CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-    cairo_set_source_rgb (cr, 0, 0, 0);
-
-
-    cairo_move_to(cr, 10, 25);
-    cairo_show_text(cr, "Halo!");
-
-    cairo_move_to(cr, 10, 75);
-    cairo_show_text(cr, "Desole on a pas pu terminer!");
-    cairo_destroy (cr);
-    cairo_surface_destroy (surface);
+/*Cette fonction permet de recuperer tous les noms d'entités uniquemnt*/
+void nom_entite(xmlChar* noms[][100],int taille,xmlChar *nomentites[]){
+int i,j; int k=0;
+ for(i=0;i<taille;i++){
+ for(j=0;noms[i][j]!=NULL;j++){
+   if(j==0&&xmlStrcmp(noms[i][j],(xmlChar*)"boutique")!=0){
+       nomentites[k]=noms[i][j];
+       //printf("nomentites[%d]=%s\n",k,nomentites[k]); 
+        k++;                                                      }
+}
+}
 }
 
+/*Cette fonction permet de recuperer tous les noms d'entités uniquemnt*/
+void nom_attributs(xmlChar* noms[][100],int taille,xmlChar *nomattr[]){
+int i,j; int k=0;
+ for(i=0;i<taille;i++){
+ for(j=0;noms[i][j]!=NULL;j++){
+   if(j!=0 &&i!=0){
+       nomattr[k]=noms[i][j];
+       //printf("nomattr[%d]=%s\n",k,nomattr[k]); 
+        k++;                                                      }
+}
+}
+}
+
+/*Cette fonction permet de recuperer tous les noms des entites et leurs composants a partir du tableau de noeuds*/
+void recuperation_des_noms(xmlNode* t[][100],xmlChar* noms[][100],int taille){
+int i,j;
+for(i=0;i<taille;i++){
+ for(j=0;t[i][j]!=NULL;j++){
+   noms[i][j]=(xmlChar*)t[i][j]->name;                                               
+                           }
+                     }
+                                                                 }
 
 /*Cette fonction permet d'avoir tous les noeuds du fichier dans un tableau*/
 int get_nodes(xmlNode *a_node,xmlNode*t[]) {
@@ -71,49 +117,46 @@ int get_nodes(xmlNode *a_node,xmlNode*t[]) {
 	}
   return i;
 }
-
-/*Cette fonction permet d'avoir l'ensembles  des éléments et leurs fils s'ils en ont du fichier xml*/
-void xml_Get_Node_Children(xmlNodePtr Node,xmlNode* noeud_enfants[][100],int j,int trace)
- {   int k=0;
-      if(Node->type==XML_ELEMENT_NODE){ 
-      int i=1;
-      noeud_enfants[j][0]=Node;
-      //printf("%s\n",noeud_enfants[j][0]->name);
-      xmlNodePtr n;  
-      n = Node->children;
-      while(n){
-           if(n->type==XML_ELEMENT_NODE){
-           noeud_enfants[j][i]=(xmlNode*)n;
-          //printf("\t%s\n",noeud_enfants[j][i]->name);
+/*Cette fonction permet d'avoir l'ensembles  des éléments qui ont des fils et leurs fils en ont du fichier xml*/
+void xml_Get_Node_Children(xmlNodePtr t[],xmlNode* noeud_enfants[][100])
+ {   int k; 
+   for(k=0;t[k]!=NULL&&t[k]->type==XML_ELEMENT_NODE;k++){
+       if( xmlChildElementCount(t[k])>0 ){
+       noeud_enfants[k][0]=t[k];
+      // printf("noeud_enfants[%d][0]%s type %d\n",k,noeud_enfants[k][0]->name,noeud_enfants[k][0]->type);
+       xmlNodePtr n;  
+       n = t[k]->children;
+       int i=1; 
+       while(n)
+       { 
+         if(n->type==XML_ELEMENT_NODE){
+           noeud_enfants[k][i]=(xmlNode*)n;
+          // printf("noeud_enfants[%d][%d]%s\n",k,i,noeud_enfants[k][i]->name);
            n=n->next;
-           i++;                         }
-           else{
+           i++;                       }
+         else{
              n=n ->next;
-               }  
-              }
-      noeud_enfants[j][i]=NULL;  }
-     else{
-      noeud_enfants[j][0]=NULL;
-}     
-       if(trace==1){
-      while(noeud_enfants[j][k]!=NULL){
-         if(k==0)
-         printf("%s\n",noeud_enfants[j][k]->name);
-         else
-         printf("\t%s\n",noeud_enfants[j][k]->name);
-         k++;
-                          }  
-}            
+             }  
+       }
+      noeud_enfants[k][i]=NULL;  
+      }             
+                                                       }
 }
 
-/*Cette fonction permet de faire l'extraction des entités et relations du fichier*/
-void Extraction(xmlNode* t[],xmlNode*noeud_enfants[][100],int trace){
- int i;
- for(i=0;t[i]!=NULL;i++){
- if(t[i]->type==XML_ELEMENT_NODE){
- xml_Get_Node_Children(t[i],noeud_enfants,i,trace);
-                                 }
-                        }
+/*Cette fonction permet de faire l'AFFICHAGE des entités et relations du fichier*/
+void Affichage(xmlNode*noeud_enfants[][100],int taille){
+ int i; int j;
+for(i=0;i<taille;i++)
+{ 
+ for(j=0;noeud_enfants[i][j]!=NULL;j++){
+  if(j==0 ){
+     printf("%s\n",noeud_enfants[i][j]->name);
+          }
+  else{
+     printf("\t%s\n",noeud_enfants[i][j]->name);
+      }
+}
+}
 }
 
 
@@ -501,7 +544,7 @@ char nomficout[50];
 char extension_ficin[50];
 char extension_ficout[50];
 char urlhttp[50];
-int trace=verification_trace(argv,argc);
+//int trace=verification_trace(argv,argc);
 int recup_local,recup_flux,recup_sortie,recup_type,recup_t,recup_extension_in,recup_extension_out,test_ext_ficin,test_ext_ficout,test_type;
 int args;
 if(argc<=10){
@@ -533,7 +576,6 @@ case 11:printf("Le type  doit etre xml\n");break;
 case 12:printf("Il n'y aucun type indiqué\n");break;
 case 1  : {
            int affic_erreurs=0;
-           printf("Informations récupérées avec demande de trace\n");
            /*Parsing DTD*/
            xmlDtd* dtd=NULL;
            dtd=xmlParseDTD(NULL,(const xmlChar*)"doc1.dtd");
@@ -551,26 +593,47 @@ case 1  : {
            int i=validation_dtd(doc,dtd,affic_erreurs);
            //printf("%d",i);
            if(i==1){
+           printf("******************************************************************************************\n");
+           printf("*******  BIENVENUE.Votre fichier SVG est disponible dans le répertoire courant.     ******\n");
+           printf("*******  Note:Ce programme peut extraire d'autres fichiers si vous changer le dtd.  ******\n");
+           printf("*******  Mais la génération ne concerne que les fichiers respectant doc1.dtd.       ******\n");
+           printf("******************************************************************************************\n");
+           printf("Voici la structure de votre fichier xml\n");
            xmlNode* t[100];
            /*Test de get_nodes*/
-           get_nodes(root,t);
+           int taille=get_nodes(root,t);
            /*Test de Extraction*/
            xmlNode* enfants[100][100];
-           Extraction(t,enfants,trace);
-           generation(nomficout);
-           printf("Extraction et génération effectuée\n");}
+           xml_Get_Node_Children(t,enfants);
+           /*test recuperation des noms*/
+           xmlChar* noms[100][100];
+           recuperation_des_noms(enfants,noms,taille);
+           /*test recuperation des nomsentites*/
+           xmlChar* nomentites[100];
+           nom_entite(noms,taille,nomentites);
+           /*test recuperation des nomattr*/
+           xmlChar *nomattr[100];
+           nom_attributs(noms,taille,nomattr);
+           Affichage(enfants,taille);
+           /*Generation*/
+           drawrectangles(nomficout,(char*)nomentites[0],(char*)nomentites[1],(char*)nomentites[2],nomattr);
+}
            else{
             printf("Le document que vous avez fourni n'est pas exploitable\n");
               }
+           
            break;
            
           }
 case 2: {
-           printf("Informations récupérées sans demande de trace\n");
            int affic_erreurs=0;
            /*Parsing DTD*/
            xmlDtd* dtd=NULL;
            dtd=xmlParseDTD(NULL,(const xmlChar*)"doc1.dtd");
+           if (dtd == NULL){
+            printf("Parse erreur DTD! ");
+            return 1;
+                           }
            /*Parsing Doc*/
            xmlDoc* doc=NULL;
            doc = xmlReadFile(nomficin, NULL, 0);
@@ -583,16 +646,30 @@ case 2: {
            root=xmlDocGetRootElement(doc);
            /*Test de validation*/
            int i=validation_dtd(doc,dtd,affic_erreurs);
-           if(i==1){
            //printf("%d",i);
+           if(i==1){
+           printf("******************************************************************************************\n");
+           printf("*******  BIENVENUE.Votre fichier SVG est disponible dans le répertoire courant.     ******\n");
+           printf("*******  Note:Ce programme peut extraire d'autres fichiers si vous changer le dtd.  ******\n");
+           printf("*******  Mais la génération ne concerne que les fichiers respectant doc1.dtd.       ******\n");
+           printf("******************************************************************************************\n");
            xmlNode* t[100];
            /*Test de get_nodes*/
-           get_nodes(root,t);
+           int taille=get_nodes(root,t);
            /*Test de Extraction*/
            xmlNode* enfants[100][100];
-           Extraction(t,enfants,trace);
-           generation(nomficout);
-           printf("Extraction et génération effectuée\n");
+           xml_Get_Node_Children(t,enfants);
+           /*test recuperation des noms*/
+           xmlChar* noms[100][100];
+           recuperation_des_noms(enfants,noms,taille);
+           /*test recuperation des nomsentites*/
+           xmlChar* nomentites[100];
+           nom_entite(noms,taille,nomentites);
+           /*test recuperation des nomattr*/
+           xmlChar *nomattr[100];
+           nom_attributs(noms,taille,nomattr);
+           /*Generation*/
+           drawrectangles(nomficout,(char*)nomentites[0],(char*)nomentites[1],(char*)nomentites[2],nomattr);
            }
            else{
                printf("Le document que vous avez fourni n'est pas exploitable\n");
